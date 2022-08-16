@@ -63,7 +63,7 @@ function Dashboard() {
 
         let html = '';
 
-        previousService.map(service => html += `<li>${service ? service.description : ''} - ${dateFromTimestamp(service)}</li>`);
+        previousService.map(service => html += `# ${service ? service.description : ''} - ${dateFromTimestamp(service)}\n\n`);
 
         return html;
     }
@@ -75,7 +75,7 @@ function Dashboard() {
         if (!service.timestamp)
             return '';
 
-        return (new Date(service.timestamp.toMillis())).toLocaleDateString("pt-BR", {
+        return (new Date(service.timestamp.toMillis())).toLocaleDateString('pt-BR', {
             weekday: 'long',
             day: 'numeric',
             month: 'long',
@@ -89,6 +89,9 @@ function Dashboard() {
         if (!id)
             return;
 
+        if (id === auth.currentUser?.email)
+            return alert('Can not delete yourself');
+            
         const reference = doc(firestore, 'admins/', id);        
         deleteDoc(reference);
         console.log('deleteAdmin', id);
@@ -112,7 +115,7 @@ function Dashboard() {
 
                 <Col>
                     <Container>{ auth.currentUser ? auth.currentUser.email : '' }</Container>
-                    <Button variant='warning' size='sm' onClick={logout}>LOGOUT</Button>
+                    <Button className='mt-1' variant='warning' size='sm' onClick={logout}>LOGOUT</Button>
                 </Col>
             </Row>
 
@@ -126,12 +129,14 @@ function Dashboard() {
                 <thead>
                     <tr className='d-flex'>
                         <th className='col-1'>#</th>
-                        <th className='col-2'>Name</th>
+                        <th className='col-1'>Name</th>
                         <th className='col-2'>Phone</th>
-                        <th className='col-2'>Service Description</th>
-                        <th className='col-1'>Service Timestamp</th>
+                        <th className='col-2'>Description</th>
+                        <th className='col-1'>Timestamp</th>
+                        <th className='col-1'>Type</th>
+                        <th className='col-1'>Model</th>
                         <th className='col-1'>Closed</th>
-                        <th className='col-2'>Previous Service</th>
+                        <th className='col-1'>Previous</th>
                         <th className='col-1'>Actions</th>
                     </tr>
                 </thead>
@@ -141,7 +146,7 @@ function Dashboard() {
                             return (
                                 <tr className='d-flex' key={index}>
                                     <td className='col-1'>{index}</td>
-                                    <td className='col-2'>{client.name}</td>
+                                    <td className='col-1'>{client.name}</td>
                                     <td className='col-2'>
                                         +{client.phone}
                                         <br />
@@ -151,10 +156,12 @@ function Dashboard() {
                                     </td>
                                     <td className='col-2 text-break'>{client.actualService ? client.actualService.description : ''}</td>
                                     <td className='col-1 text-break'>{dateFromTimestamp(client.actualService)}</td>
+                                    <td className='col-1 text-break'>{client.actualService ? client.actualService.type : ''}</td>
+                                    <td className='col-1 text-break'>{client.actualService ? client.actualService.model : ''}</td>
                                     <td className='col-1'>
                                         <Form.Check type='switch' checked={client.closed} onChange={() => updateClientClosed(client.phone, !client.closed)} onClick={() => updateClientClosed(client.phone, !client.closed)} />
                                     </td>
-                                    <td className='col-2 text-break'>{listPreviousService(client.previousService)}</td>
+                                    <td className='col-1 text-break'>{listPreviousService(client.previousService)}</td>
                                     <td className='col-1'>
                                         <Button variant='danger' size='sm' onClick={() => deleteClient(client.phone)}>Delete</Button>
                                     </td>
