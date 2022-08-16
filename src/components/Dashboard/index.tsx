@@ -4,7 +4,7 @@ import { Container, Table, Row, Button, Col, Form } from 'react-bootstrap';
 
 import { getApp } from 'firebase/app';
 import { getAuth, signOut } from 'firebase/auth';
-import { getFirestore, collection, onSnapshot, deleteDoc, updateDoc, doc, orderBy, query } from 'firebase/firestore';
+import { getFirestore, collection, onSnapshot, deleteDoc, updateDoc, setDoc, doc, orderBy, query } from 'firebase/firestore';
 
 import ClientModel from '../../models/client';
 import ServiceModel from '../../models/service';
@@ -15,15 +15,22 @@ function Dashboard() {
     const firestore = getFirestore(app);
 
     const [clients, setClients] = React.useState<ClientModel[]>([]);
+    const [admins, setAdmins] = React.useState<string[]>([]);
+
+    const [admin, setAdmin] = React.useState<string>('');
 
     React.useEffect(() => {
         const q = query(collection(firestore, 'clients'), orderBy('actualService.timestamp', 'desc'));
-
         onSnapshot(q, async (snapshot) => {
             const data = snapshot.docs.map(doc => doc.data());
             setClients(data as ClientModel[]);
         });
 
+        const q2 = query(collection(firestore, 'admins'));
+        onSnapshot(q2, async (snapshot) => {
+            const data = snapshot.docs.map(doc => doc.id);
+            setAdmins(data as string[]);
+        });
     } , []);
 
     function logout() {
@@ -78,16 +85,40 @@ function Dashboard() {
         });
     }
 
+    function deleteAdmin(id: string) {
+        if (!id)
+            return;
+
+        const reference = doc(firestore, 'admins/', id);        
+        deleteDoc(reference);
+        console.log('deleteAdmin', id);
+    }
+
+    function addAdmin(email: string) {
+        if (!email)
+            return;
+
+        const reference = doc(firestore, 'admins/', email);        
+        setDoc(reference, {});
+        console.log('addAdmin', email);
+    }
+
     return (
         <Container>
             <Row className='mt-3 mb-3'>
                 <Col>
-                    <h1>Dashboard</h1>
+                    <h1>Doutor Tech - Dashboard</h1>
                 </Col>
 
                 <Col>
                     <Container>{ auth.currentUser ? auth.currentUser.email : '' }</Container>
                     <Button variant='warning' size='sm' onClick={logout}>LOGOUT</Button>
+                </Col>
+            </Row>
+
+            <Row className='mt-3 mb-3'>
+                <Col>
+                    <h2>Clients</h2>
                 </Col>
             </Row>
 
@@ -113,9 +144,9 @@ function Dashboard() {
                                     <td className='col-2'>{client.name}</td>
                                     <td className='col-2'>
                                         +{client.phone}
-                                        <br/>
+                                        <br />
                                         <Button className='mt-1' variant='secondary' size='sm' href={'tel:+' + client.phone}>Call</Button>
-                                        <br/>
+                                        <br />
                                         <Button className='mt-1' variant='success' size='sm' href={'https://wa.me/' + client.phone} target='_blank'>WhatsApp</Button>
                                     </td>
                                     <td className='col-2 text-break'>{client.actualService ? client.actualService.description : ''}</td>
@@ -132,6 +163,46 @@ function Dashboard() {
                         })
                     }
                 </tbody>
+            </Table>
+
+            <Row className='mt-3 mb-3'>
+                <Col>
+                    <h2>Admins</h2>
+                </Col>
+            </Row>
+
+            <Form className='mt-2 d-flex'>
+                    <Container className='col-11'>
+                        <Form.Control type='text' placeholder='Email' value={admin} onChange={(e) => setAdmin(e.target.value)} required />
+                    </Container>
+                    <Container className='col-1'>
+                        <Button variant='success' size='sm' onClick={() => addAdmin(admin)}>Add</Button>
+                    </Container>
+            </Form>
+
+            <Table  striped bordered hover responsive size='sm' className='mt-2'>
+                <thead>
+                    <tr className='d-flex'>
+                        <th className='col-1'>#</th>
+                        <th className='col-10'>Admin</th>
+                        <th className='col-1'>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        admins.map((admin, index) => {
+                            return (
+                                <tr className='d-flex' key={index}>
+                                    <td className='col-1'>{index}</td>
+                                    <td className='col-10'>{admin}</td>
+                                    <td className='col-1'>
+                                        <Button variant='danger' size='sm' onClick={() => deleteAdmin(admin)}>Delete</Button>
+                                    </td>
+                                </tr>
+                            );
+                        })
+                    }
+                </tbody>                
             </Table>
         </Container>
     );
