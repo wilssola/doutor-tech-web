@@ -1,0 +1,3 @@
+const fcmToken = 'BI2_kHuzYbE7LAI5pUvYLC4iMw7ATwisBkvQAyIqq4kJhbe7x9dSoQ3jXcdQJ17ko0JJWEENxVtXUFYhqhPDqdE';
+
+export default fcmToken;
