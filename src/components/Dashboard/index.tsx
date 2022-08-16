@@ -27,7 +27,9 @@ function Dashboard() {
     } , []);
 
     function logout() {
-        signOut(auth);
+        signOut(auth)
+        .then(() => console.log('logout'))
+        .catch(error => console.log(error));
     }
 
     function deleteClient(id: string) {
@@ -84,6 +86,7 @@ function Dashboard() {
                 </Col>
 
                 <Col>
+                    <Container>{ auth.currentUser ? auth.currentUser.email : '' }</Container>
                     <Button variant='warning' size='sm' onClick={logout}>LOGOUT</Button>
                 </Col>
             </Row>
@@ -108,7 +111,13 @@ function Dashboard() {
                                 <tr className='d-flex' key={index}>
                                     <td className='col-1'>{index}</td>
                                     <td className='col-2'>{client.name}</td>
-                                    <td className='col-2'>{client.phone}</td>
+                                    <td className='col-2'>
+                                        +{client.phone}
+                                        <br/>
+                                        <Button className='mt-1' variant='secondary' size='sm' href={'tel:+' + client.phone}>Call</Button>
+                                        <br/>
+                                        <Button className='mt-1' variant='success' size='sm' href={'https://wa.me/' + client.phone} target='_blank'>WhatsApp</Button>
+                                    </td>
                                     <td className='col-2 text-break'>{client.actualService ? client.actualService.description : ''}</td>
                                     <td className='col-1 text-break'>{dateFromTimestamp(client.actualService)}</td>
                                     <td className='col-1'>
