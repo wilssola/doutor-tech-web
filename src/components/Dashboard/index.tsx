@@ -146,7 +146,7 @@ function Dashboard() {
                             return (
                                 <tr className='d-flex' key={index}>
                                     <td className='col-1'>{index}</td>
-                                    <td className='col-1'>{client.name}</td>
+                                    <td className='col-1'>{client.name.toUpperCase()}</td>
                                     <td className='col-2'>
                                         +{client.phone}
                                         <br />
@@ -156,8 +156,8 @@ function Dashboard() {
                                     </td>
                                     <td className='col-2 text-break'>{client.actualService ? client.actualService.description : ''}</td>
                                     <td className='col-1 text-break'>{dateFromTimestamp(client.actualService)}</td>
-                                    <td className='col-1 text-break'>{client.actualService ? client.actualService.type : ''}</td>
-                                    <td className='col-1 text-break'>{client.actualService ? client.actualService.model : ''}</td>
+                                    <td className='col-1 text-break'>{client.actualService ? client.actualService.type.toUpperCase() : ''}</td>
+                                    <td className='col-1 text-break'>{client.actualService ? client.actualService.model.toUpperCase() : ''}</td>
                                     <td className='col-1'>
                                         <Form.Check type='switch' checked={client.closed} onChange={() => updateClientClosed(client.phone, !client.closed)} onClick={() => updateClientClosed(client.phone, !client.closed)} />
                                     </td>
