@@ -219,7 +219,7 @@ function Dashboard() {
             <Row className='mt-3 mb-3'>
                 <Col>
                     <h1>Doutor Tech - Dashboard</h1>
-                    <h2>Bot Status: {online.toString()} </h2>
+                    <h2>Bot Status: {online ? 'online' : 'offline'} </h2>
                 </Col>
 
                 <Col>
