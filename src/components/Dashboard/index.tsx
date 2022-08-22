@@ -92,7 +92,7 @@ function Dashboard() {
                 {
                     previousService.map((service, index) => {
                         return (
-                            <Container key={index} className='d-flex mt-1'>
+                            <Container key={index} className='d-flex mb-2'>
                                 <Container>{'#' + (service ? service.os.toUpperCase() : '') + '\n'}</Container>
                                 &nbsp;
                                 <Button variant="danger" size='sm' onClick={() => removePreviousOS(id, service.os)}>x</Button>
@@ -277,8 +277,9 @@ function Dashboard() {
                                     <td className='col-2 text-break'>
                                         {listPreviousService(client.phone, client.previousService)}
 
-                                        <Container className='d-flex mt-3'>
+                                        <Container className='d-flex'>
                                             <Form.Control size='sm' onChange={(e) => tempOs[client.phone] = e.target.value}></Form.Control>
+                                            &nbsp;
                                             <Button variant='success' size='sm' onClick={() => addPreviousOS(client.phone, tempOs[client.phone])}>+</Button>
                                         </Container>
                                     </td>
