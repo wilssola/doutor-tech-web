@@ -93,9 +93,12 @@ function Dashboard() {
                     previousService.map((service, index) => {
                         return (
                             <Container key={index} className='d-flex mb-2'>
-                                <Container>{'#' + (service ? service.os.toUpperCase() : '') + '\n'}</Container>
-                                &nbsp;
-                                <Button variant="danger" size='sm' onClick={() => removePreviousOS(id, service.os)}>x</Button>
+                                <Container className='col-10'>
+                                    {'#' + (service ? service.os.toUpperCase() : '') + '\n'}
+                                </Container>
+                                <Container>
+                                    <Button variant='danger' size='sm' onClick={() => removePreviousOS(id, service.os)}>x</Button>
+                                </Container>
                             </Container>
                         )
                     })
@@ -237,11 +240,10 @@ function Dashboard() {
             <Table striped bordered hover responsive size='sm'>
                 <thead>
                     <tr className='d-flex'>
-                        <th className='col-1'>#</th>
                         <th className='col-1'>Name</th>
                         <th className='col-1'>Phone</th>
                         <th className='col-1'>OS</th>
-                        <th className='col-1'>Description</th>
+                        <th className='col-2'>Description</th>
                         <th className='col-1'>Timestamp</th>
                         <th className='col-1'>Type</th>
                         <th className='col-1'>Model</th>
@@ -255,7 +257,6 @@ function Dashboard() {
                         clients.map((client, index) => {
                             return (
                                 <tr className='d-flex' key={index}>
-                                    <td className='col-1'>{index}</td>
                                     <td className='col-1'>{client.name.toUpperCase()}</td>
                                     <td className='col-1 text-break'>
                                         +{client.phone}
@@ -265,9 +266,9 @@ function Dashboard() {
                                         <Button className='mt-1' variant='success' size='sm' href={'https://wa.me/' + client.phone} target='_blank'>WhatsApp</Button>
                                     </td>
                                     <td className='col-1'>
-                                        <Form.Control value={client.actualService ? client.actualService.os : ''} onChange={(e) => updateClientActualOS(client.phone, e.target.value)}></Form.Control>
+                                        <Form.Control size='sm' value={client.actualService ? client.actualService.os : ''} onChange={(e) => updateClientActualOS(client.phone, e.target.value)}></Form.Control>
                                     </td>
-                                    <td className='col-1 text-break'>{client.actualService ? client.actualService.description.toUpperCase() : ''}</td>
+                                    <td className='col-2 text-break'>{client.actualService ? client.actualService.description.toUpperCase() : ''}</td>
                                     <td className='col-1 text-break'>{dateFromTimestamp(client.actualService).toUpperCase()}</td>
                                     <td className='col-1 text-break'>{client.actualService ? client.actualService.type.toUpperCase() : ''}</td>
                                     <td className='col-1 text-break'>{client.actualService ? client.actualService.model.toUpperCase() : ''}</td>
@@ -277,11 +278,14 @@ function Dashboard() {
                                     <td className='col-2 text-break'>
                                         {listPreviousService(client.phone, client.previousService)}
 
-                                        <Container className='d-flex'>
-                                            <Form.Control size='sm' onChange={(e) => tempOs[client.phone] = e.target.value}></Form.Control>
-                                            &nbsp;
-                                            <Button variant='success' size='sm' onClick={() => addPreviousOS(client.phone, tempOs[client.phone])}>+</Button>
-                                        </Container>
+                                        <Form className='d-flex'>                                                            
+                                            <Container className='col-9'>
+                                                <Form.Control size='sm' onChange={(e) => tempOs[client.phone] = e.target.value}></Form.Control>
+                                            </Container>
+                                            <Container>
+                                                <Button variant='success' size='sm' onClick={() => addPreviousOS(client.phone, tempOs[client.phone])}>+</Button>
+                                            </Container>
+                                        </Form>
                                     </td>
                                     <td className='col-1'>
                                         <Button variant='danger' size='sm' onClick={() => deleteClient(client.phone)}>Delete</Button>
@@ -311,8 +315,7 @@ function Dashboard() {
             <Table  striped bordered hover responsive size='sm' className='mt-2'>
                 <thead>
                     <tr className='d-flex'>
-                        <th className='col-1'>#</th>
-                        <th className='col-10'>Admin</th>
+                        <th className='col-11'>Admin</th>
                         <th className='col-1'>Actions</th>
                     </tr>
                 </thead>
@@ -321,8 +324,7 @@ function Dashboard() {
                         admins.map((admin, index) => {
                             return (
                                 <tr className='d-flex' key={index}>
-                                    <td className='col-1'>{index}</td>
-                                    <td className='col-10'>{admin}</td>
+                                    <td className='col-11'>{admin}</td>
                                     <td className='col-1'>
                                         <Button variant='danger' size='sm' onClick={() => deleteAdmin(admin)}>Delete</Button>
                                     </td>
